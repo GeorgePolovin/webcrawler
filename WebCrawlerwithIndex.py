@@ -1,9 +1,11 @@
 #page = contents use get_page
 
-def get_page(url): 
-	try: import urllib 
-		return urllib.urlopen(url).read() 
-	except: 
+#Test github in atom
+
+def get_page(url):
+	try: import urllib
+		return urllib.urlopen(url).read()
+	except:
 		return
 
 def get_next_target(page):
@@ -15,18 +17,18 @@ def get_next_target(page):
         end_quote = page.find('"', start_quote + 1)
         url = page[start_quote + 1:end_quote]
         return url, end_quote
-        
+
 def union(p,q):
     for e in q:
         if e not in p:
             p.append(e)
-                 
+
 def get_all_links(page):
 	while True:
 		url, endpos=get_next_target(page)
 		links=[]
 		if url:
-			links.append(url) 
+			links.append(url)
 			page=page[endpos:]
 		else:
 			break
@@ -50,7 +52,7 @@ def add_to_index(index, keyword, url):
         #if entry[0] == keyword:
             #return entry[1]
     #return []
-    
+
 def lookup(index, keyword):
     if keyword in index:
         return index[keyword]
@@ -61,22 +63,22 @@ def add_page_to_index(index, url, content):
     words = content.split()
     for word in words:
         add_to_index(index, word, url)
-        
+
 def hashtable_get_bucket(htable,keyword):
     return htable[hash_string(keyword,len(htable))]
-    
+
 def hash_string(keyword,buckets):
     result=0
     for letter in keyword:
         result = (result+ ord(letter))%buckets
     return result
-    
+
 def make_hashtable(nbuckets):
     hashtable = []
     for unused in range(0,nbuckets):
     	hashtable.append([])
     return hashtable
-	
+
 def crawl_web(seed):
 	tocrawl=[seed]
 	crawled =[]
@@ -96,12 +98,12 @@ def crawl_web(seed):
 def compute_ranks(graph):
     d = 0.8 # damping factor
     numloops = 10
-    
+
     ranks = {}
     npages = len(graph)
     for page in graph:
         ranks[page] = 1.0 / npages
-    
+
     for i in range(0, numloops):
         newranks = {}
         for page in graph:
@@ -112,5 +114,5 @@ def compute_ranks(graph):
             newranks[page] = newrank
         ranks = newranks
     return ranks
-	
+
 print_all_links(get_page('url'))
